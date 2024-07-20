@@ -1,9 +1,29 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-class Homepage extends StatelessWidget{
+import 'package:flutter/material.dart';
+import 'package:vigilapp_20221073/pages/addincidentpage.dart';
+
+class Homepage extends StatefulWidget{
 
   const Homepage({super.key});
-  
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+
+  Future<void> _navigateToAddIncidentPage() async{
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddIncidentPage()
+      )
+    );
+
+    result ? log('Se ha agregado un incidente') : log('no se ha agregado incidente');
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -41,7 +61,7 @@ class Homepage extends StatelessWidget{
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () { },
+        onPressed: _navigateToAddIncidentPage,
         child: const Icon(Icons.add),
         ),
     );
