@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:vigilapp_20221073/database/database_helper.dart';
-import 'package:vigilapp_20221073/pages/addincidentpage.dart';
-import 'package:vigilapp_20221073/widgets/incidentlistpage.dart';
+import '../database/database_helper.dart';
+import 'addincidentpage.dart';
+import '../widgets/incidentlistpage.dart';
 
 class Homepage extends StatefulWidget{
 
@@ -31,7 +31,7 @@ class _HomepageState extends State<Homepage> {
 
     _incidentListKey.currentState?.refreshData();
   }
-  
+
   void _showWarningDialog(BuildContext context) {
     showDialog(
       context: context,

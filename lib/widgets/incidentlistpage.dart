@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/incident_model.dart';
 
 import '../database/database_helper.dart';
+import '../pages/incidentdetailpage.dart';
 
 class IncidentListPage extends StatefulWidget{
   const IncidentListPage({super.key});
@@ -69,7 +70,12 @@ class IncidentListPageState extends State<IncidentListPage>{
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     onTap: () {
-                      // Acción al tocar la incidencia
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IncidentDetailPage(incident: incident),
+                        ),
+                      );
                     },
                   ),
                 );
