@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import '../database/database_helper.dart';
 import '../models/incident_model.dart';
@@ -23,10 +24,25 @@ class AddIncidentPageState extends State<AddIncidentPage>{
   final _record = Record();
   bool _isRecording = false;
 
+  Future<void> _requestPermissions() async {
+    final status = await Permission.microphone.request();
+    if (!status.isGranted) {
+      log('Permiso de grabación de audio denegado.');
+    }
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _requestPermissions();
+  }
+
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
-      _imageFile = File(pickedFile!.path);
+      if(pickedFile != null){
+        _imageFile = File(pickedFile!.path);
+      }
     });
   }
 
@@ -37,7 +53,8 @@ class AddIncidentPageState extends State<AddIncidentPage>{
 
       //Inicio de la grabación
       await _record.start(
-        path: path
+        path: path,
+        encoder: AudioEncoder.aacLc
         );
         
       setState(() {
@@ -62,9 +79,12 @@ class AddIncidentPageState extends State<AddIncidentPage>{
   }
 
   Future<void> _saveIncident() async {
+
+    if(_isRecording) _stopRecording();
+    
     final incident = Incident(
       title: _titleController.text,
-      date: DateTime.now(),
+      date: DateTime.now().toString(),
       description: _descriptionController.text,
       photo: _imageFile?.path,
       audio: _audioFilePath

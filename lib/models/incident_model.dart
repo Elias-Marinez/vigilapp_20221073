@@ -1,7 +1,7 @@
 class Incident {
   int? id;
   String title;
-  DateTime date;
+  String date;
   String description;
   String? photo;
   String? audio;

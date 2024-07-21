@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:vigilapp_20221073/database/database_helper.dart';
 import 'package:vigilapp_20221073/pages/addincidentpage.dart';
+import 'package:vigilapp_20221073/widgets/incidentlistpage.dart';
 
 class Homepage extends StatefulWidget{
 
@@ -13,6 +15,8 @@ class Homepage extends StatefulWidget{
 
 class _HomepageState extends State<Homepage> {
 
+  final GlobalKey<IncidentListPageState> _incidentListKey = GlobalKey<IncidentListPageState>();
+
   Future<void> _navigateToAddIncidentPage() async{
     final result = await Navigator.push(
       context,
@@ -21,7 +25,48 @@ class _HomepageState extends State<Homepage> {
       )
     );
 
-    result ? log('Se ha agregado un incidente') : log('no se ha agregado incidente');
+    if(result != null){
+      result ? log('Se ha agregado un incidente') : log('no se ha agregado incidente');
+    }
+
+    _incidentListKey.currentState?.refreshData();
+  }
+  
+  void _showWarningDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Aviso'),
+          content: const Text(
+            'Esta seguro que quieres eliminar todos la informacion de la App?', 
+            style: TextStyle(
+              color: Colors.black
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteAllIncidents(); // Ejecuta la acción
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: const Text('Si'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAllIncidents() async {
+    await DatabaseHelper().deleteAllIncidents();
+    _incidentListKey.currentState?.refreshData();
   }
 
   @override
@@ -57,6 +102,8 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ),
+            const SizedBox(height: 30),
+            IncidentListPage(key: _incidentListKey)
           ],
         ),
       ),
@@ -65,36 +112,5 @@ class _HomepageState extends State<Homepage> {
         child: const Icon(Icons.add),
         ),
     );
-  }
-
-    void _showWarningDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Warning'),
-          content: const Text('Are you sure you want to proceed?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-              },
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-                _executeAction(); // Ejecuta la acción
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _executeAction() {
-    // Aquí defines la acción a ejecutar si el usuario selecciona "Sí"
   }
 }
