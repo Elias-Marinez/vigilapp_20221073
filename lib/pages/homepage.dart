@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:vigilapp_20221073/pages/aboutmepage.dart';
 import '../database/database_helper.dart';
 import 'addincidentpage.dart';
 import '../widgets/incidentlistpage.dart';
@@ -77,7 +78,12 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () { },
+            onPressed: () { 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutMePage()),
+              );
+            },
           ),
         ],
       ),
